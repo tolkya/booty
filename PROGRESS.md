@@ -19,12 +19,18 @@
 - [x] Premier commit effectué
 - [x] Repository GitHub créé et code poussé
 - [x] Bundles essentiels installés (maker, security, validator, fixtures)
+- [x] User créé (avec make:user)
+- [x] Hunt créé avec relation User
 
 ### 🔄 En Cours
-- [ ] Créer les entités
+- [ ] Créer QrCode (avec isStartCode pour QR départ)
+- [ ] Créer Question et QuestionChoice
+- [ ] Créer Hunter, Session, SessionParticipant
+- [ ] Créer SessionAnswer et SessionLocation
 - [ ] Créer les migrations
 
 ### ⏳ À Venir
+- [ ] Exécuter migrations et vérifier DB
 - [ ] Configurer JWT
 - [ ] Créer repositories custom
 - [ ] Créer fixtures
@@ -64,17 +70,18 @@
 ## 🗄️ PHASE 3: CRÉATION ENTITÉS
 
 ### Entités Principales
-- [ ] User (Organizer)
-- [ ] Hunt (Chasse)
-- [ ] QrCode
-- [ ] Question
-- [ ] QuestionChoice
-- [ ] Participant
-- [ ] Session
-- [ ] SessionAnswer
-- [ ] SessionLocation
+- [x] User (Organizer) - email, password, roles, firstName, lastName, createdAt, updatedAt
+- [x] Hunt (Chasse) - organizer (ManyToOne User), title, description, maxDuration, status, createdAt, updatedAt
+- [ ] QrCode - hunt (ManyToOne Hunt), code, orderPosition, latitude, longitude, isPlaced, placedAt, createdAt, isStartCode
+- [ ] Question - hunt (ManyToOne Hunt), type, questionText, points, timeLimit, image, createdAt, updatedAt
+- [ ] QuestionChoice - question (ManyToOne Question), choiceText, isCorrect, orderPosition
+- [ ] Hunter - pseudo, groupName, createdAt
+- [ ] Session - hunt (ManyToOne Hunt), maxDuration, startedAt, endedAt, status
+- [ ] SessionParticipant - session (ManyToOne Session), hunter (ManyToOne Hunter), score, startedAt, finishedAt, status
+- [ ] SessionAnswer - sessionParticipant (ManyToOne SessionParticipant), qrCode (ManyToOne QrCode), question (ManyToOne Question), answerText, isCorrect, points, answeredAt, timeSpent
+- [ ] SessionLocation - sessionParticipant (ManyToOne SessionParticipant), latitude, longitude, recordedAt
 
-**Statut**: ⏸️ Pas commencé
+**Statut**: 🟢 En cours (2/10 entités créées)
 
 ---
 
@@ -242,8 +249,17 @@
 - ✅ Clarification complète du modèle de données
 
 **Compréhension du projet validée**:
-- **Organisateur** : Crée Hunt avec N QR codes + Questions (≥ N questions), place QR géographiquement (mobile), lance Sessions collectives avec durée max
-- **Hunter** : Pas de compte, scanne QR "départ" → saisit pseudo/nom groupe, scanne QR codes dans ordre libre
+- **Hunt vs Session** : Hunt = template/modèle (QR + questions), Session = instance lancée avec startedAt/endedAt
+
+**Actions entités** :
+- ✅ User créé avec make:user (email, password hashed, roles, firstName, lastName, createdAt, updatedAt)
+- ✅ Hunt créé (title, description, maxDuration, status, createdAt, updatedAt) avec relation ManyToOne vers User
+
+**Prochaine action**: Continuer création entités (QrCode avec isStartCode, Question, QuestionChoice, Hunter, Session, SessionParticipant, SessionAnswer, SessionLocation)
+
+**Blocages**: Aucun
+
+**Questions en suspens**: Aucune
 - **Attribution questions** : Aléatoire parmi celles non posées au hunter, pas de répétition
 - **QR codes** : Ordre libre, hunter ne peut pas rescanner un QR déjà fait
 - **Tracking GPS** : Position du hunter enregistrée pendant toute la session (anti-triche)
@@ -251,17 +267,37 @@
 - **Calcul scores** : Après la session, statistiques web (organisateur) et mobile (hunters)
 
 **Structure finale 10 entités**:
-1. User (organisateur avec email/mdp)
+   - Champs: email, password (hashed), roles, firstName, lastName, createdAt, updatedAt
+   - Relation: OneToMany → Hunt
 2. Hunt (chasse créée par User)
+   - Champs: title, description, maxDuration (minutes), status (draft/ready/active/archived), createdAt, updatedAt
+   - Relations: ManyToOne → User, OneToMany → QrCode, OneToMany → Question, OneToMany → Session
 3. QrCode (appartient à Hunt, dont QR "départ")
+   - Champs: code (unique), orderPosition, latitude, longitude, isPlaced, placedAt, createdAt, isStartCode
+   - Relation: ManyToOne → Hunt
 4. Question (appartient à Hunt, choix multiple OU texte libre, points, temps limite optionnel)
+   - Champs: type (multiple_choice/free_text), questionText, points, timeLimit (secondes), image, createdAt, updatedAt
+   - Relations: ManyToOne → Hunt, OneToMany → QuestionChoice
 5. QuestionChoice (choix d'une Question)
+   - Champs: choiceText, isCorrect, orderPosition
+   - Relation: ManyToOne → Question
 6. Hunter (juste pseudo/nom, pas de compte)
+   - Champs: pseudo, groupName, createdAt
+   - Relation: OneToMany → SessionParticipant
 7. Session (lancée par organisateur sur une Hunt)
+   - Champs: maxDuration (minutes), startedAt, endedAt, status (pending/active/finished)
+   - Relations: ManyToOne → Hunt, OneToMany → SessionParticipant
 8. SessionParticipant (entité intermédiaire: Hunter dans Session avec score/temps/statut)
+   - Champs: score, startedAt, finishedAt, status (in_progress/completed/abandoned)
+   - Relations: ManyToOne → Session, ManyToOne → Hunter, OneToMany → SessionAnswer, OneToMany → SessionLocation
 9. SessionAnswer (réponse: SessionParticipant + QrCode + Question + réponse + points + temps)
+   - Champs: answerText, isCorrect, points, answeredAt, timeSpent (secondes)
+   - Relations: ManyToOne → SessionParticipant, ManyToOne → QrCode, ManyToOne → Question
 10. SessionLocation (tracking GPS: SessionParticipant + lat/lng + timestamp)
+    - Champs: latitude, longitude, recordedAt
+    - Relation: ManyToOne → SessionParticipant
 
+**Prochaine action**: Créer les entités restantes (QrCode, Question, QuestionChoice, Hunter, Session, SessionParticipant, SessionAnswer, SessionLocation
 **Prochaine action**: Créer les entités de base (User, Hunt, QrCode, Question, QuestionChoice)
 
 **Blocages**: Aucun
