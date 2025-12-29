@@ -8,39 +8,39 @@
 ## 🎯 PHASE 1: CONFIGURATION INITIALE & GIT
 
 ### ✅ Étapes Complétées
-- [x] Git initialisé
-- [x] .gitignore de base présent
-- [x] .env et .env.dev configurés
-- [x] Docker Compose opérationnel (postgres + adminer)
+- [x] Git initialisé avec structure branches (main, pre-prod, dev)
+- [x] .gitignore configuré
+- [x] .env.local configuré (non committé)
+- [x] compose.override.yaml configuré (credentials DB)
+- [x] Docker Compose opérationnel (postgres + adminer + php)
 - [x] Symfony 8.0 installé
 - [x] Doctrine ORM configuré
+- [x] Connexion DB résolue
+- [x] Premier commit effectué
+- [x] Repository GitHub créé et code poussé
+- [x] Bundles essentiels installés (maker, security, validator, fixtures)
 
 ### 🔄 En Cours
-- [ ] Améliorer .gitignore pour Docker/Symfony complet
-- [ ] Créer .env.local pour paramètres personnels
-- [ ] Premier commit propre
-- [ ] Créer repository GitHub
-- [ ] Pousser le code initial
+- [ ] Créer les entités
+- [ ] Créer les migrations
 
 ### ⏳ À Venir
-- [ ] Installer bundles essentiels
 - [ ] Configurer JWT
-- [ ] Créer entités
-- [ ] Migrations
+- [ ] Créer repositories custom
+- [ ] Créer fixtures
 
 ---
 
 ## 📦 PHASE 2: INSTALLATION BUNDLES
 
-### Bundles de Développement
-- [ ] symfony/maker-bundle
+###x] symfony/maker-bundle
 - [ ] symfony/debug-bundle  
 - [ ] symfony/web-profiler-bundle
-- [ ] doctrine/doctrine-fixtures-bundle
+- [x] doctrine/doctrine-fixtures-bundle
 - [ ] zenstruck/foundry
 
 ### Bundles Sécurité & API
-- [ ] symfony/security-bundle
+- [x] symfony/security-bundle
 - [ ] lexik/jwt-authentication-bundle
 - [ ] api-platform/core (via `composer require api`)
 - [ ] nelmio/cors-bundle
@@ -53,9 +53,10 @@
 - [ ] vich/uploader-bundle
 
 ### Bundles Validation
-- [ ] symfony/validator
+- [x] symfony/validator
 - [ ] symfony/serializer
 
+**Statut**: 🟢 En cours (bundles essentiels installés)
 **Statut**: ⏸️ Pas commencé
 
 ---
@@ -211,8 +212,7 @@
 ---
 
 ## 📝 NOTES DE SESSION
-
-### Session du 29 Décembre 2025
+ - Partie 1
 **Objectif**: Configuration initiale et structure Git
 
 **Actions réalisées**:
@@ -224,15 +224,64 @@
 - ✅ Création install-bundles.sh (script installation)
 - ✅ Création PROGRESS.md (ce fichier de suivi)
 
-**Prochaine action**: Améliorer .gitignore et faire premier commit propre
+### Session du 29 Décembre 2025 - Partie 2
+**Objectif**: Configuration Git, résolution problème DB, installation bundles, clarification modèle
+
+**Actions réalisées**:
+- ✅ Structure Git créée : main (prod) → pre-prod (tests) → dev (développement)
+- ✅ Premier commit effectué et poussé sur GitHub
+- ✅ Résolution problème authentification PostgreSQL
+  - Ajout credentials dans compose.override.yaml (non committé)
+  - Configuration DATABASE_URL dans service PHP
+  - Correction healthcheck PostgreSQL
+- ✅ Installation bundles essentiels :
+  - symfony/maker-bundle (dev)
+  - symfony/security-bundle
+  - symfony/validator
+  - doctrine/doctrine-fixtures-bundle (dev)
+- ✅ Clarification complète du modèle de données
+
+**Compréhension du projet validée**:
+- **Organisateur** : Crée Hunt avec N QR codes + Questions (≥ N questions), place QR géographiquement (mobile), lance Sessions collectives avec durée max
+- **Hunter** : Pas de compte, scanne QR "départ" → saisit pseudo/nom groupe, scanne QR codes dans ordre libre
+- **Attribution questions** : Aléatoire parmi celles non posées au hunter, pas de répétition
+- **QR codes** : Ordre libre, hunter ne peut pas rescanner un QR déjà fait
+- **Tracking GPS** : Position du hunter enregistrée pendant toute la session (anti-triche)
+- **Temps** : Limite globale sur la session (définie par organisateur) + optionnel par question
+- **Calcul scores** : Après la session, statistiques web (organisateur) et mobile (hunters)
+
+**Structure finale 10 entités**:
+1. User (organisateur avec email/mdp)
+2. Hunt (chasse créée par User)
+3. QrCode (appartient à Hunt, dont QR "départ")
+4. Question (appartient à Hunt, choix multiple OU texte libre, points, temps limite optionnel)
+5. QuestionChoice (choix d'une Question)
+6. Hunter (juste pseudo/nom, pas de compte)
+7. Session (lancée par organisateur sur une Hunt)
+8. SessionParticipant (entité intermédiaire: Hunter dans Session avec score/temps/statut)
+9. SessionAnswer (réponse: SessionParticipant + QrCode + Question + réponse + points + temps)
+10. SessionLocation (tracking GPS: SessionParticipant + lat/lng + timestamp)
+
+**Prochaine action**: Créer les entités de base (User, Hunt, QrCode, Question, QuestionChoice)
 
 **Blocages**: Aucun
 
 **Questions en suspens**: Aucune
 
----
+**⚠️ RAPPEL IMPORTA██ 100% (Configuration initiale - TERMINÉE)
+Phase 2  : ████░░░░░░  40% (Bundles essentiels installés)
+Phase 3  : ░░░░░░░░░░   0% (Entités)
+Phase 4  : ░░░░░░░░░░   0% (Migrations)
+Phase 5  : ░░░░░░░░░░   0% (Sécurité)
+Phase 6  : ░░░░░░░░░░   0% (API)
+Phase 7  : ░░░░░░░░░░   0% (Interface Web)
+Phase 8  : ░░░░░░░░░░   0% (Logique Métier)
+Phase 9  : ░░░░░░░░░░   0% (Fixtures)
+Phase 10 : ░░░░░░░░░░   0% (Tests)
+Phase 11 : ░░░░░░░░░░   0% (Flutter)
+Phase 12 : ░░░░░░░░░░   0% (Déploiement)
 
-## 🎯 PROCHAINES ACTIONS IMMÉDIATES
+TOTAL    : ██░░░░░░░░  15 IMMÉDIATES
 
 1. **Améliorer .gitignore** (ajouter règles Docker, IDE, etc.)
 2. **Créer .env.local** (avec vos paramètres personnels)
