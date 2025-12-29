@@ -1,55 +1,11 @@
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
+/.env.dev
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
-###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###
-
-###> Docker ###
-compose.override.yaml
-docker-compose.override.yml
-.env.docker.local
-###< Docker ###
-
-###> IDE ###
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-###< IDE ###
-
-###> Node/Webpack ###
-/node_modules/
-/public/build/
-npm-debug.log
-yarn-error.log
-###< Node/Webpack ###
-
-###> Symfony Web Server ###
-/.web-server-pid
-###< Symfony Web Server ###
-
-###> Backup files ###
-*.bak
-*.backup
-*~
-###< Backup files ###
