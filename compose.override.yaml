@@ -24,3 +24,14 @@ services:
     tty: true
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
+
+###> doctrine/doctrine-bundle ###
+  database:
+    environment:
+      POSTGRES_USER: appbooty
+      POSTGRES_PASSWORD: secretmdp
+      POSTGRES_DB: booty
+      POSTGRES_VERSION: 16
+    ports:
+      - "5432"
+###< doctrine/doctrine-bundle ###
