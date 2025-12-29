@@ -9,24 +9,35 @@
 
 ### ✅ Étapes Complétées
 - [x] Git initialisé
-- [x] .gitignore de base présent
-- [x] .env et .env.dev configurés
+- [x] .gitignore complet configuré (Docker, IDE, Symfony, JWT)
+- [x] .env et .env.local configurés
+- [x] compose.override.yaml configuré (non versionné, contient secrets locaux)
 - [x] Docker Compose opérationnel (postgres + adminer)
 - [x] Symfony 8.0 installé
-- [x] Doctrine ORM configuré
+- [x] Doctrine ORM configuré et testé (connexion PostgreSQL OK)
+- [x] Premier commit effectué
+- [x] Repository GitHub créé et connecté (https://github.com/tolkya/booty.git)
+- [x] Code poussé sur GitHub
+- [x] Fichiers sensibles supprimés de GitHub (.env.dev, .env.local, compose.override.yaml)
 
-### 🔄 En Cours
-- [ ] Améliorer .gitignore pour Docker/Symfony complet
-- [ ] Créer .env.local pour paramètres personnels
-- [ ] Premier commit propre
-- [ ] Créer repository GitHub
-- [ ] Pousser le code initial
+### 🔄 PROBLÈMES RÉSOLUS
+- ✅ Configuration sécurité : compose.override.yaml utilisé pour secrets locaux (non versionné)
+- ✅ Secrets supprimés du compose.yaml (valeurs génériques uniquement)
+- ✅ .gitignore complété pour ignorer tous les fichiers sensibles
+- ✅ Remote Git corrigé (pointait vers dunglas/symfony-docker au lieu de tolkya/booty)
+- ✅ Connexion PostgreSQL fonctionnelle avec user=appbooty, password=secretmdp
 
-### ⏳ À Venir
-- [ ] Installer bundles essentiels
-- [ ] Configurer JWT
-- [ ] Créer entités
-- [ ] Migrations
+### ⚠️ NOTES IMPORTANTES
+- **compose.override.yaml** contient les vraies valeurs (POSTGRES_USER, POSTGRES_PASSWORD, etc.)
+- **.env.local** contient DATABASE_URL et APP_SECRET
+- Ces 2 fichiers ne sont JAMAIS versionnés sur GitHub
+- La base PostgreSQL fonctionne : `docker compose exec php php bin/console dbal:run-sql "SELECT 1"` ✅
+
+### ⏳ PROCHAINES ÉTAPES
+- [ ] Installer bundles essentiels (maker, security, API Platform)
+- [ ] Configurer JWT pour l'API mobile
+- [ ] Créer les 9 entités (User, Hunt, QrCode, Question, etc.)
+- [ ] Générer et exécuter les migrations
 
 ---
 
@@ -201,30 +212,90 @@
 
 ## 🚀 PHASE 12: DÉPLOIEMENT
 
-- [ ] Configuration production
-- [ ] Optimisations
-- [ ] Documentation API
-- [ ] Tests production
-
-**Statut**: ⏸️ Pas commencé
-
----
-
-## 📝 NOTES DE SESSION
-
-### Session du 29 Décembre 2025
-**Objectif**: Configuration initiale et structure Git
+- [ ] Configuration production - TERMINÉE ✅
+**Objectif**: Configuration initiale, sécurité et Git
 
 **Actions réalisées**:
-- ✅ Analyse configuration Docker existante
-- ✅ Création PROJECT_ROADMAP.md (plan général)
-- ✅ Création SETUP_GUIDE.md (guide configuration)
-- ✅ Création QUICKSTART.md (guide démarrage rapide)
-- ✅ Création database_schema.dbml (schéma DB)
-- ✅ Création install-bundles.sh (script installation)
-- ✅ Création PROGRESS.md (ce fichier de suivi)
+- ✅ Analyse configuration Docker existante (FrankenPHP + PostgreSQL 16)
+- ✅ Création documentation complète :
+  - PROJECT_ROADMAP.md (plan détaillé 12 phases)
+  - SETUP_GUIDE.md (guide configuration détaillé)
+  - QUICKSTART.md (guide démarrage rapide)
+  - database_schema.dbml (schéma complet 9 entités)
+  - install-bundles.sh (script installation bundles)
+  - PROGRESS.md (suivi progression)
+- ✅ Configuration sécurité Git :
+  - .gitignore complet (Docker, IDE, Symfony, secrets)
+  - compose.override.yaml pour secrets locaux
+  - Suppression fichiers sensibles de GitHub
+- ✅ Configuration Docker :
+  - compose.yaml avec valeurs génériques
+  - compose.override.yaml avec vraies valeurs (non versionné)
+  - Secrets dans compose.yaml remplacés par valeurs génériques
+- ✅ Test connexion PostgreSQL réussi
+- ✅ Premier commit + push sur GitHub
 
-**Prochaine action**: Améliorer .gitignore et faire premier commit propre
+**Architecture Sécurité Finale**:
+```
+VERSIONNÉS (GitHub):
+- compose.yaml → Valeurs génériques ${VARIABLE:-default}
+- .env → Valeurs génériques ou vides
+- .gitignore → Ignore tous les secrets
+
+NON VERSIONNÉS (local):
+- compose.override.yaml → Vraies variables Docker (POSTGRES_*, MERCURE_*)
+- .env.local → Vraies variables Symfony (DATABASE_URL, APP_SECRET)
+```██ 100% ✅ (Configuration initiale - TERMINÉE)
+Phase 2  : ░░░░░░░░░░   0%    (Bundles)
+Phase 3  : ░░░░░░░░░░   0%    (Entités)
+Phase 4  : ░░░░░░░░░░   0%    (Migrations)
+Phase 5  : ░░░░░░░░░░   0%    (Sécurité)
+Phase 6  : ░░░░░░░░░░   0%    (API)
+Phase 7  : ░░░░░░░░░░   0%    (Interface Web)
+Phase 8  : ░░░░░░░░░░   0%    (Logique Métier)
+Phase 9  : ░░░░░░░░░░   0%    (Fixtures)
+Phase 10 : ░░░░░░░░░░   0%    (Tests)
+Phase 11 : ░░░░░░░░░░   0%    (Flutter)
+Phase 12 : ░░░░░░░░░░   0%    (Déploiement)
+
+TOTAL    : █░░░░░░░░░  10%
+```
+
+## 🎯 PROCHAINE SESSION - À FAIRE
+
+### 1. Installation Bundles (Phase 2 - début)
+Ordre d'installation recommandé :
+```bash
+# Bundles de développement
+docker compose exec php composer require --dev symfony/maker-bundle
+docker compose exec php composer require --dev symfony/web-profiler-bundle
+
+# Sécurité & API
+docker compose exec php composer require symfony/security-bundle
+docker compose exec php composer require api
+docker compose exec php composer require lexik/jwt-authentication-bundle
+
+# Validation & Forms
+docker compose exec php composer require symfony/validator
+docker compose exec php composer require symfony/form
+docker compose exec php composer require symfony/twig-bundle
+
+# QR Code & Upload
+docker compose exec php composer require endroid/qr-code-bundle
+docker compose exec php composer require vich/uploader-bundle
+```
+
+### 2. Configuration JWT
+```bash
+docker compose exec php bin/console lexik:jwt:generate-keypair
+```
+
+### 3. Création première entité (User)
+```bash
+docker compose exec php bin/console make:user
+```
+
+**Référence complète** : Voir QUICKSTART.md et PROJECT_ROADMAP.mdrochaine action**: Améliorer .gitignore et faire premier commit propre
 
 **Blocages**: Aucun
 
