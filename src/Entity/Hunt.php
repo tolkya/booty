@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\HuntRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,6 +37,17 @@ class Hunt
 
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
+
+    /**
+     * @var Collection<int, QrCode>
+     */
+    #[ORM\OneToMany(targetEntity: QrCode::class, mappedBy: 'hunt', orphanRemoval: true)]
+    private Collection $qrCodes;
+
+    public function __construct()
+    {
+        $this->qrCodes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +134,36 @@ class Hunt
     public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QrCode>
+     */
+    public function getQrCodes(): Collection
+    {
+        return $this->qrCodes;
+    }
+
+    public function addQrCode(QrCode $qrCode): static
+    {
+        if (!$this->qrCodes->contains($qrCode)) {
+            $this->qrCodes->add($qrCode);
+            $qrCode->setHunt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQrCode(QrCode $qrCode): static
+    {
+        if ($this->qrCodes->removeElement($qrCode)) {
+            // set the owning side to null (unless already changed)
+            if ($qrCode->getHunt() === $this) {
+                $qrCode->setHunt(null);
+            }
+        }
 
         return $this;
     }
