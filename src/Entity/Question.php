@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,6 +40,17 @@ class Question
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, QuestionChoice>
+     */
+    #[ORM\OneToMany(targetEntity: QuestionChoice::class, mappedBy: 'question', orphanRemoval: true)]
+    private Collection $questionChoices;
+
+    public function __construct()
+    {
+        $this->questionChoices = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -136,6 +149,36 @@ class Question
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuestionChoice>
+     */
+    public function getQuestionChoices(): Collection
+    {
+        return $this->questionChoices;
+    }
+
+    public function addQuestionChoice(QuestionChoice $questionChoice): static
+    {
+        if (!$this->questionChoices->contains($questionChoice)) {
+            $this->questionChoices->add($questionChoice);
+            $questionChoice->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionChoice(QuestionChoice $questionChoice): static
+    {
+        if ($this->questionChoices->removeElement($questionChoice)) {
+            // set the owning side to null (unless already changed)
+            if ($questionChoice->getQuestion() === $this) {
+                $questionChoice->setQuestion(null);
+            }
+        }
 
         return $this;
     }
