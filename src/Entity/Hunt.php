@@ -50,6 +50,9 @@ class Hunt
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'hunt', orphanRemoval: true)]
     private Collection $questions;
 
+    #[ORM\Column(length: 20)]
+    private ?string $mode = null;
+
     public function __construct()
     {
         $this->qrCodes = new ArrayCollection();
@@ -201,6 +204,18 @@ class Hunt
                 $question->setHunt(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMode(): ?string
+    {
+        return $this->mode;
+    }
+
+    public function setMode(string $mode): static
+    {
+        $this->mode = $mode;
 
         return $this;
     }
