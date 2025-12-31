@@ -53,10 +53,17 @@ class Hunt
     #[ORM\Column(length: 20)]
     private ?string $mode = null;
 
+    /**
+     * @var Collection<int, Session>
+     */
+    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'hunt', orphanRemoval: true)]
+    private Collection $sessions;
+
     public function __construct()
     {
         $this->qrCodes = new ArrayCollection();
         $this->questions = new ArrayCollection();
+        $this->sessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -216,6 +223,36 @@ class Hunt
     public function setMode(string $mode): static
     {
         $this->mode = $mode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Session>
+     */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(Session $session): static
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->sessions->add($session);
+            $session->setHunt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(Session $session): static
+    {
+        if ($this->sessions->removeElement($session)) {
+            // set the owning side to null (unless already changed)
+            if ($session->getHunt() === $this) {
+                $session->setHunt(null);
+            }
+        }
 
         return $this;
     }
