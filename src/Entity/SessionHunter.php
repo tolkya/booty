@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SessionHunterRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SessionHunterRepository::class)]
@@ -32,6 +34,17 @@ class SessionHunter
 
     #[ORM\Column(length: 50)]
     private ?string $status = null;
+
+    /**
+     * @var Collection<int, SessionAnswer>
+     */
+    #[ORM\OneToMany(targetEntity: SessionAnswer::class, mappedBy: 'sessionHunter', orphanRemoval: true)]
+    private Collection $sessionAnswers;
+
+    public function __construct()
+    {
+        $this->sessionAnswers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +119,36 @@ class SessionHunter
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SessionAnswer>
+     */
+    public function getSessionAnswers(): Collection
+    {
+        return $this->sessionAnswers;
+    }
+
+    public function addSessionAnswer(SessionAnswer $sessionAnswer): static
+    {
+        if (!$this->sessionAnswers->contains($sessionAnswer)) {
+            $this->sessionAnswers->add($sessionAnswer);
+            $sessionAnswer->setSessionHunter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSessionAnswer(SessionAnswer $sessionAnswer): static
+    {
+        if ($this->sessionAnswers->removeElement($sessionAnswer)) {
+            // set the owning side to null (unless already changed)
+            if ($sessionAnswer->getSessionHunter() === $this) {
+                $sessionAnswer->setSessionHunter(null);
+            }
+        }
 
         return $this;
     }
