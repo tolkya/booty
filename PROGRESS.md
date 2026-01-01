@@ -19,21 +19,17 @@
 - [x] Premier commit effectué
 - [x] Repository GitHub créé et code poussé
 - [x] Bundles essentiels installés (maker, security, validator, fixtures)
-- [x] User créé (avec make:user)
-- [x] Hunt créé avec relation User
+- [x] Toutes les entités créées (10/10)
 
 ### 🔄 En Cours
-- [ ] Créer QrCode (avec isStartCode pour QR départ)
-- [ ] Créer Question et QuestionChoice
-- [ ] Créer Hunter, Session, SessionParticipant
-- [ ] Créer SessionAnswer et SessionLocation
-- [ ] Créer les migrations
+- [ ] Créer et exécuter la migration
+- [ ] Vérifier les tables dans Adminer
 
 ### ⏳ À Venir
-- [ ] Exécuter migrations et vérifier DB
-- [ ] Configurer JWT
-- [ ] Créer repositories custom
-- [ ] Créer fixtures
+- [ ] Créer fixtures pour tests
+- [ ] Installer bundles API (api-platform, jwt, cors)
+- [ ] Développer endpoints API REST
+- [ ] Développer interface web organisateur
 
 ---
 
@@ -71,17 +67,17 @@
 
 ### Entités Principales
 - [x] User (Organizer) - email, password, roles, firstName, lastName, createdAt, updatedAt
-- [x] Hunt (Chasse) - organizer (ManyToOne User), title, description, maxDuration, status, createdAt, updatedAt
-- [ ] QrCode - hunt (ManyToOne Hunt), code, orderPosition, latitude, longitude, isPlaced, placedAt, createdAt, isStartCode
-- [ ] Question - hunt (ManyToOne Hunt), type, questionText, points, timeLimit, image, createdAt, updatedAt
-- [ ] QuestionChoice - question (ManyToOne Question), choiceText, isCorrect, orderPosition
-- [ ] Hunter - pseudo, groupName, createdAt
-- [ ] Session - hunt (ManyToOne Hunt), maxDuration, startedAt, endedAt, status
-- [ ] SessionParticipant - session (ManyToOne Session), hunter (ManyToOne Hunter), score, startedAt, finishedAt, status
-- [ ] SessionAnswer - sessionParticipant (ManyToOne SessionParticipant), qrCode (ManyToOne QrCode), question (ManyToOne Question), answerText, isCorrect, points, answeredAt, timeSpent
-- [ ] SessionLocation - sessionParticipant (ManyToOne SessionParticipant), latitude, longitude, recordedAt
+- [x] Hunt (Chasse) - organizer, title, description, maxDuration, status, mode (qr_only/qr_with_questions), timeLimitMode (strict/penalty), createdAt, updatedAt
+- [x] QrCode - hunt, code, orderPosition, latitude (decimal 10,8), longitude (decimal 11,8), isPlaced, placedAt, createdAt, isStartCode
+- [x] Question - hunt, type (multiple_choice/free_text), questionText, points, timeLimit, image, createdAt, updatedAt
+- [x] QuestionChoice - question, choiceText (500 car), isCorrect, orderPosition
+- [x] Hunter - name (pseudo ou nom groupe), createdAt
+- [x] Session - hunt, maxDuration (minutes), startedAt, endedAt, status (pending/active/finished)
+- [x] SessionHunter - session, hunter, score, startedAt, endedAt, status (in_progress/completed/abandoned)
+- [x] SessionAnswer - sessionHunter, qrCode, question, answerText, isCorrect, points, answeredAt, timeSpent
+- [x] SessionLocation - sessionHunter, latitude (decimal 10,8), longitude (decimal 11,8), recordedAt
 
-**Statut**: 🟢 En cours (2/10 entités créées)
+**Statut**: ✅ Terminé (10/10 entités créées)
 
 ---
 
@@ -350,3 +346,27 @@ TOTAL    : █░░░░░░░░░  7%
 
 *Ce fichier sera mis à jour après chaque étape complétée*
 *N'hésitez pas à ajouter vos propres notes dans la section "Notes de Session"*
+
+### Session du 31 Décembre 2025 / 1er Janvier 2026
+**Objectif**: Création complète de toutes les entités du modèle
+
+**Actions réalisées**:
+- ✅ Création des 10 entités : User, Hunt, QrCode, Question, QuestionChoice, Hunter, Session, SessionHunter, SessionAnswer, SessionLocation
+- ✅ Choix decimal (10,8 et 11,8) pour GPS (précision centimètre)
+- ✅ Renommage SessionParticipant → SessionHunter
+- ✅ Ajout Hunt.mode (qr_only/qr_with_questions)
+- ✅ Ajout Hunt.timeLimitMode (strict/penalty)
+- ✅ Hunter simplifié à "name" uniquement
+
+**Clarifications métier**:
+- Anonymat hunters: nouveau Hunter à chaque session
+- Mode qr_only possible (sans questions)
+- timeLimitMode: strict (bloqué) ou penalty (pénalité)
+- Questions ≥ QR codes pour variété
+- Session.maxDuration individuel par hunter
+- Session.startedAt/endedAt géré par organisateur
+- SessionHunter.startedAt quand s'inscrit + endedAt calculé
+
+**Prochaine action**: Générer et exécuter migration
+
+**Progression**: Phase 3 terminée (100%), Total: 28%
