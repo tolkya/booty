@@ -41,9 +41,16 @@ class SessionHunter
     #[ORM\OneToMany(targetEntity: SessionAnswer::class, mappedBy: 'sessionHunter', orphanRemoval: true)]
     private Collection $sessionAnswers;
 
+    /**
+     * @var Collection<int, SessionLocation>
+     */
+    #[ORM\OneToMany(targetEntity: SessionLocation::class, mappedBy: 'sessionHunter', orphanRemoval: true)]
+    private Collection $sessionLocations;
+
     public function __construct()
     {
         $this->sessionAnswers = new ArrayCollection();
+        $this->sessionLocations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +154,36 @@ class SessionHunter
             // set the owning side to null (unless already changed)
             if ($sessionAnswer->getSessionHunter() === $this) {
                 $sessionAnswer->setSessionHunter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SessionLocation>
+     */
+    public function getSessionLocations(): Collection
+    {
+        return $this->sessionLocations;
+    }
+
+    public function addSessionLocation(SessionLocation $sessionLocation): static
+    {
+        if (!$this->sessionLocations->contains($sessionLocation)) {
+            $this->sessionLocations->add($sessionLocation);
+            $sessionLocation->setSessionHunter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSessionLocation(SessionLocation $sessionLocation): static
+    {
+        if ($this->sessionLocations->removeElement($sessionLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($sessionLocation->getSessionHunter() === $this) {
+                $sessionLocation->setSessionHunter(null);
             }
         }
 
