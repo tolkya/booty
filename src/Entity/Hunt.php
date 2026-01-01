@@ -59,6 +59,9 @@ class Hunt
     #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'hunt', orphanRemoval: true)]
     private Collection $sessions;
 
+    #[ORM\Column(length: 20)]
+    private ?string $timeLimitMode = null;
+
     public function __construct()
     {
         $this->qrCodes = new ArrayCollection();
@@ -253,6 +256,18 @@ class Hunt
                 $session->setHunt(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTimeLimitMode(): ?string
+    {
+        return $this->timeLimitMode;
+    }
+
+    public function setTimeLimitMode(string $timeLimitMode): static
+    {
+        $this->timeLimitMode = $timeLimitMode;
 
         return $this;
     }
