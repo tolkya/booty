@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SessionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
@@ -28,6 +30,17 @@ class Session
 
     #[ORM\Column(length: 50)]
     private ?string $status = null;
+
+    /**
+     * @var Collection<int, SessionHunter>
+     */
+    #[ORM\OneToMany(targetEntity: SessionHunter::class, mappedBy: 'session')]
+    private Collection $sessionHunters;
+
+    public function __construct()
+    {
+        $this->sessionHunters = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +103,36 @@ class Session
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SessionHunter>
+     */
+    public function getSessionHunters(): Collection
+    {
+        return $this->sessionHunters;
+    }
+
+    public function addSessionHunter(SessionHunter $sessionHunter): static
+    {
+        if (!$this->sessionHunters->contains($sessionHunter)) {
+            $this->sessionHunters->add($sessionHunter);
+            $sessionHunter->setSession($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSessionHunter(SessionHunter $sessionHunter): static
+    {
+        if ($this->sessionHunters->removeElement($sessionHunter)) {
+            // set the owning side to null (unless already changed)
+            if ($sessionHunter->getSession() === $this) {
+                $sessionHunter->setSession(null);
+            }
+        }
 
         return $this;
     }
