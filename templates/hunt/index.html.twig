@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Chasses - Booty QR{% endblock %}
+
+{% block page_name %}Mes Chasses{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Toutes mes chasses</h2>
+        <a href="#" class="btn btn-primary">+ Créer une nouvelle chasse</a>
+    </div>
+
+    {% if hunts is empty %}
+        <div class="alert alert-info">
+            Vous n'avez pas encore créé de chasse au trésor.
+            <a href="#" class="alert-link">Créez votre première chasse</a> pour commencer.
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for hunt in hunts %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ hunt.title }}</h5>
+                            <p class="card-text text-muted">
+                                {% if hunt.description %}
+                                    {{ hunt.description|slice(0, 100) }}{% if hunt.description|length > 100 %}...{% endif %}
+                                {% else %}
+                                    Aucune description
+                                {% endif %}
+                            </p>
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    Mode: {{ hunt.mode == 'qr_only' ? 'QR uniquement' : 'QR + Questions' }}
+                                </small>
+                            </div>
+                            <div class="mb-3">
+                                {% if hunt.status == 'draft' %}
+                                    <span class="badge bg-warning">Brouillon</span>
+                                {% elseif hunt.status == 'ready' %}
+                                    <span class="badge bg-info">Prête</span>
+                                {% elseif hunt.status == 'active' %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Archivée</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-sm btn-outline-primary">Voir</a>
+                                <a href="#" class="btn btn-sm btn-outline-secondary">Éditer</a>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <small>Créée le {{ hunt.createdAt|date('d/m/Y') }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

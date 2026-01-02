@@ -19,7 +19,7 @@
             <a href="{{ path('app_dashboard') }}" class="sidebar-link {{ app.request.attributes.get('_route') == 'app_dashboard' ? 'active' : '' }}">
                 <span class="icon">🏠</span> Dashboard
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="{{ path('hunt_index') }}" class="sidebar-link {{ app.request.attributes.get('_route') starts with 'hunt_' ? 'active' : '' }}">
                 <span class="icon">🎯</span> Mes Chasses
             </a>
             <a href="#" class="sidebar-link">

@@ -5,7 +5,6 @@
     padding: 15px 30px;
     display: flex;
     align-items: center;
-    gap: 20px;
 }
 
 /* Bouton hamburger */
@@ -37,6 +36,8 @@
     font-weight: 600;
     color: #1e293b;
     margin: 0;
+    flex: 1;
+    text-align: center;
 }
 
 /* Navigation sidebar */
