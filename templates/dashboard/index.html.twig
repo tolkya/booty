@@ -1,20 +1,106 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello DashboardController!{% endblock %}
+{% block title %}Dashboard - Booty QR{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="dashboard-container">
+    <h1 class="page-title">Dashboard</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {# {{ controller_name }} #}! ✅</h1>
+    <!-- Statistiques -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_hunts }}</div>
+            <div class="stat-label">Chasses</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ total_sessions }}</div>
+            <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ active_sessions_count }}</div>
+            <div class="stat-label">En cours</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ total_hunters }}</div>
+            <div class="stat-label">Hunters</div>
+        </div>
+    </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/DashboardController.php</code></li>
-        <li>Your template at <code>/app/templates/dashboard/index.html.twig</code></li>
-    </ul>
+    <!-- Mes dernières chasses -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2 class="section-title">🎯 Mes dernières chasses</h2>
+            <a href="#" class="btn-link">Voir toutes →</a>
+        </div>
+        
+        {% if recent_hunts is empty %}
+            <p class="empty-message">Aucune chasse créée pour le moment.</p>
+            <a href="#" class="btn btn-primary">+ Créer ma première chasse</a>
+        {% else %}
+            <ul class="item-list">
+                {% for hunt in recent_hunts %}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-info">
+                                <strong>{{ hunt.title }}</strong>
+                                <div class="item-details">
+                                    Mode: {{ hunt.mode == 'qr_only' ? 'QR uniquement' : 'QR + Questions' }}
+                                    {% if hunt.status == 'draft' %}
+                                        <span class="badge badge-warning">Brouillon</span>
+                                    {% elseif hunt.status == 'ready' %}
+                                        <span class="badge badge-info">Prête</span>
+                                    {% elseif hunt.status == 'active' %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <a href="#" class="btn-link">Voir</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <!-- Sessions en cours -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2 class="section-title">📅 Sessions en cours</h2>
+            <a href="#" class="btn-link">Voir toutes →</a>
+        </div>
+        
+        {% if active_sessions is empty %}
+            <p class="empty-message">Aucune session en cours.</p>
+            <a href="#" class="btn btn-primary">+ Lancer une session</a>
+        {% else %}
+            <ul class="item-list">
+                {% for session in active_sessions %}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-info">
+                                <strong>{{ session.hunt.title }}</strong>
+                                <div class="item-details">
+                                    Démarrée {{ session.startedAt|date('d/m/Y à H:i') }}
+                                    <span class="badge badge-success">🟢 En cours</span>
+                                </div>
+                            </div>
+                            <a href="#" class="btn-link">Voir en direct</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="quick-actions">
+        <a href="#" class="btn btn-primary">+ Créer une nouvelle chasse</a>
+        <a href="#" class="btn btn-primary">+ Lancer une session</a>
+    </div>
 </div>
 {% endblock %}
