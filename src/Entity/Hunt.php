@@ -67,6 +67,9 @@ class Hunt
         $this->qrCodes = new ArrayCollection();
         $this->questions = new ArrayCollection();
         $this->sessions = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
+        $this->status = 'en_preparation';
     }
 
     public function getId(): ?int

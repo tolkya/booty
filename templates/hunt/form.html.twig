@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ is_edit ? 'Modifier' : 'Créer' }} une chasse - Booty QR{% endblock %}
+
+{% block page_name %}{{ is_edit ? 'Modifier la chasse' : 'Nouvelle chasse' }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title) }}
+                            {{ form_widget(form.title) }}
+                            {{ form_errors(form.title) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.description) }}
+                            {{ form_widget(form.description) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.mode) }}
+                            <div>
+                                {{ form_widget(form.mode) }}
+                            </div>
+                            {{ form_errors(form.mode) }}
+                        </div>
+
+                        <div class="mb-3" id="timeLimitModeField" style="display: none;">
+                            {{ form_label(form.timeLimitMode) }}
+                            <div>
+                                {{ form_widget(form.timeLimitMode) }}
+                            </div>
+                            {{ form_errors(form.timeLimitMode) }}
+                            <small class="text-muted">Comment gérer le temps limite des questions</small>
+                        </div>
+
+                        {% if not is_edit %}
+                            <div class="mb-3">
+                                {{ form_label(form.qrCodeCount) }}
+                                {{ form_widget(form.qrCodeCount) }}
+                                {{ form_errors(form.qrCodeCount) }}
+                                {{ form_help(form.qrCodeCount) }}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                {{ is_edit ? 'Enregistrer les modifications' : 'Créer la chasse' }}
+                            </button>
+                            <a href="{{ path('hunt_index') }}" class="btn btn-secondary">Annuler</a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/hunt-form.js') }}"></script>
+{% endblock %}

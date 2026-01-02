@@ -8,13 +8,13 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Toutes mes chasses</h2>
-        <a href="#" class="btn btn-primary">+ Créer une nouvelle chasse</a>
+        <a href="{{ path('hunt_new') }}" class="btn btn-primary">+ Créer une nouvelle chasse</a>
     </div>
 
     {% if hunts is empty %}
         <div class="alert alert-info">
             Vous n'avez pas encore créé de chasse au trésor.
-            <a href="#" class="alert-link">Créez votre première chasse</a> pour commencer.
+            <a href="{{ path('hunt_new') }}" class="alert-link">Créez votre première chasse</a> pour commencer.
         </div>
     {% else %}
         <div class="row g-4">
@@ -48,7 +48,7 @@
                             </div>
                             <div class="d-flex gap-2">
                                 <a href="#" class="btn btn-sm btn-outline-primary">Voir</a>
-                                <a href="#" class="btn btn-sm btn-outline-secondary">Éditer</a>
+                                <a href="{{ path('hunt_edit', {id: hunt.id}) }}" class="btn btn-sm btn-outline-secondary">Éditer</a>
                             </div>
                         </div>
                         <div class="card-footer text-muted">
