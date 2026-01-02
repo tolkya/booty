@@ -1,0 +1,19 @@
+    <div class="header-left">
+        <h1 class="header-logo">🎯 Booty QR</h1>
+    </div>
+    <div class="header-right">
+        <div class="header-user">
+            <div class="user-info">
+                <div class="user-name">{{ app.user.firstName }} {{ app.user.lastName }}</div>
+                <div class="user-role">
+                    {% if is_granted('ROLE_ADMIN') %}
+                        Administrateur
+                    {% else %}
+                        Organisateur
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <a href="{{ path('app_logout') }}" class="btn btn-danger">Déconnexion</a>
+    </div>
+</header>
