@@ -1,0 +1,77 @@
+/* Sous-header avec bouton hamburger */
+.subheader {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Bouton hamburger */
+.btn-hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.btn-hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: #1e293b;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.btn-hamburger:hover span {
+    background: #3b82f6;
+}
+
+.page-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+/* Navigation sidebar */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sidebar-link.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.sidebar-link .icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.sidebar-divider {
+    margin: 15px 0;
+    border-color: #e2e8f0;
+}

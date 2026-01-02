@@ -6,22 +6,29 @@
         <title>{% block title %}Booty QR{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
         
-        <!-- CSS commun -->
+        <!-- Bootstrap CSS (AVANT ton CSS pour que le tien override) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- CSS commun (APRÈS Bootstrap) -->
         <link rel="stylesheet" href="{{ asset('css/common.css') }}">
         <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
         
         {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
         {% if app.user %}
             {% include 'components/header.html.twig' %}
+            {% include 'components/sidebar.html.twig' with {'page_title': block('page_name')} %}
         {% endif %}
         
         {% block body %}{% endblock %}
+        
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        {% block javascripts %}
+        {% endblock %}
     </body>
 </html>

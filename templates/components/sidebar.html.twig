@@ -1,0 +1,37 @@
+<!-- Sous-header avec bouton hamburger et titre de page -->
+<div class="subheader">
+    <button class="btn-hamburger" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <h2 class="page-name">{{ page_title|default('') }}</h2>
+</div>
+
+<!-- Sidebar Offcanvas -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">🎯 Navigation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <nav class="sidebar-nav">
+            <a href="{{ path('app_dashboard') }}" class="sidebar-link {{ app.request.attributes.get('_route') == 'app_dashboard' ? 'active' : '' }}">
+                <span class="icon">🏠</span> Dashboard
+            </a>
+            <a href="#" class="sidebar-link">
+                <span class="icon">🎯</span> Mes Chasses
+            </a>
+            <a href="#" class="sidebar-link">
+                <span class="icon">📅</span> Sessions
+            </a>
+            
+            {% if is_granted('ROLE_ADMIN') %}
+                <hr class="sidebar-divider">
+                <a href="#" class="sidebar-link">
+                    <span class="icon">👥</span> Utilisateurs
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+</div>

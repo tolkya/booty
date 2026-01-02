@@ -2,6 +2,8 @@
 
 {% block title %}Dashboard - Booty QR{% endblock %}
 
+{% block page_name %}Dashboard{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
@@ -9,8 +11,6 @@
 
 {% block body %}
 <div class="dashboard-container">
-    <h1 class="page-title">Dashboard</h1>
-
     <!-- Statistiques -->
     <div class="stats-grid">
         <div class="stat-card">
