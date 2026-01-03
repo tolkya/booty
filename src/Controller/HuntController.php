@@ -45,13 +45,47 @@ final class HuntController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $qrCodeCount = $form->get('qrCodeCount')->getData();
             
-            // TODO: Générer les QR codes (prochaine étape)
+            // Récupérer le temps limite par défaut pour les questions (en secondes)
+            $defaultQuestionTimeLimit = null;
+            $hasTimeLimit = $form->get('hasTimeLimit')->getData();
+            if ($hasTimeLimit) {
+                $minutes = $form->get('timeLimitMinutes')->getData() ?? 0;
+                $seconds = $form->get('timeLimitSeconds')->getData() ?? 0;
+                $defaultQuestionTimeLimit = ($minutes * 60) + $seconds;
+            }
             
+            // Stocker temporairement dans la session pour la page questions
+            $request->getSession()->set('default_question_time_limit', $defaultQuestionTimeLimit);
+            $request->getSession()->set('time_limit_mode', $hunt->getTimeLimitMode());
+            
+            // Persister la hunt d'abord
             $em->persist($hunt);
             $em->flush();
             
+            // Générer les QR codes
+            for ($i = 1; $i <= $qrCodeCount; $i++) {
+                $qrCode = new \App\Entity\QrCode();
+                $qrCode->setHunt($hunt);
+                $qrCode->setCode('qr_' . uniqid()); // Générer un code unique
+                $qrCode->setOrderPosition($i);
+                $qrCode->setIsStartCode($i === 1); // Le premier est le code de départ
+                $qrCode->setIsPlaced(false);
+                $qrCode->setCreatedAt(new \DateTimeImmutable()); // Force l'initialisation au cas où le constructeur ne marche pas
+                
+                $em->persist($qrCode);
+            }
+            $em->flush();
+            
             $this->addFlash('success', 'Chasse créée avec succès !');
-            return $this->redirectToRoute('hunt_index');
+            
+            // Redirection selon le mode
+            if ($hunt->getMode() === 'qr_with_questions') {
+                // Rediriger vers création des questions
+                return $this->redirectToRoute('hunt_questions', ['id' => $hunt->getId()]);
+            } else {
+                // Rediriger vers page détail de la hunt
+                return $this->redirectToRoute('hunt_show', ['id' => $hunt->getId()]);
+            }
         }
         
         return $this->render('hunt/form.html.twig', [
@@ -83,6 +117,31 @@ final class HuntController extends AbstractController
             'form' => $form,
             'hunt' => $hunt,
             'is_edit' => true,
+        ]);
+    }
+    
+    #[Route('/{id}/questions', name: 'hunt_questions')]
+    public function questions(Hunt $hunt, Request $request, EntityManagerInterface $em): Response
+    {
+        // Vérifier que l'utilisateur est bien le propriétaire
+        if ($hunt->getOrganizer() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+        
+        // Compter les QR codes pour afficher le minimum requis
+        $qrCodeCount = $hunt->getQrCodes()->count();
+        $questionCount = $hunt->getQuestions()->count();
+        
+        // Récupérer le temps par défaut depuis la session
+        $defaultTimeLimit = $request->getSession()->get('default_question_time_limit');
+        $timeLimitMode = $request->getSession()->get('time_limit_mode');
+        
+        return $this->render('hunt/questions.html.twig', [
+            'hunt' => $hunt,
+            'qrCodeCount' => $qrCodeCount,
+            'questionCount' => $questionCount,
+            'defaultTimeLimit' => $defaultTimeLimit,
+            'timeLimitMode' => $timeLimitMode,
         ]);
     }
 }

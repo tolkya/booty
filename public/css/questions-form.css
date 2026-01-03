@@ -1,0 +1,50 @@
+/* Container questions */
+.question-block {
+    border: 2px solid #e2e8f0;
+}
+
+.question-block .card-header {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Choix de réponses */
+.choice-item {
+    gap: 10px;
+}
+
+.choice-item input {
+    flex: 1;
+}
+
+.choice-toggle {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.choice-toggle.correct {
+    background: #22c55e;
+    color: white;
+}
+
+.choice-toggle.incorrect {
+    background: #ef4444;
+    color: white;
+}
+
+.choice-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Types de questions (boutons radio stylés) */
+.btn-group .btn-check:checked + .btn-outline-primary {
+    background-color: #3b82f6;
+    color: white;
+}

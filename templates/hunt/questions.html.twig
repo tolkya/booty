@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer les questions - {{ hunt.title }}{% endblock %}
+
+{% block page_name %}Questions pour "{{ hunt.title }}"{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/questions-form.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="alert alert-info">
+        <strong>📝 Nombre de questions requises :</strong> Minimum {{ qrCodeCount }} questions (1 par QR code)
+        <br>
+        <strong>✅ Questions créées :</strong> {{ questionCount }} / {{ qrCodeCount }}
+    </div>
+
+    <div id="questions-container">
+        <!-- Les questions seront ajoutées ici dynamiquement -->
+    </div>
+
+    <div class="text-center my-4">
+        <button type="button" id="add-question-btn" class="btn btn-primary btn-lg">
+            + Ajouter une question
+        </button>
+    </div>
+
+    <div class="text-center my-4">
+        <button type="button" id="validate-questions-btn" class="btn btn-success btn-lg" disabled>
+            Valider toutes les questions
+        </button>
+        <a href="{{ path('hunt_index') }}" class="btn btn-secondary">Terminer plus tard</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/questions-form.js') }}" 
+            data-min-questions="{{ qrCodeCount }}"
+            data-default-time="{{ defaultTimeLimit|default('null') }}"
+            data-time-mode="{{ timeLimitMode|default('') }}">
+    </script>
+{% endblock %}

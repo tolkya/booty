@@ -6,6 +6,7 @@ use App\Entity\Hunt;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,11 +35,38 @@ class HuntType extends AbstractType
                 'expanded' => true, // Radio buttons
                 'attr' => ['class' => 'form-check']
             ])
-            ->add('timeLimitMode', ChoiceType::class, [
-                'label' => 'Limite de temps pour répondre aux questions',
+            ->add('hasTimeLimit', ChoiceType::class, [
+                'label' => 'Imposer un temps limite pour répondre aux questions',
+                'mapped' => false,
+                'required' => true,
                 'choices' => [
-                    'Strict (impossible de répondre après)' => 'strict',
-                    'Avec pénalité (peut répondre mais pénalisé)' => 'penalty',
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => true,
+                'data' => false,
+                'placeholder' => false, // Pas de choix vide
+                'attr' => ['class' => 'form-check']
+            ])
+            ->add('timeLimitMinutes', IntegerType::class, [
+                'label' => false,
+                'mapped' => false,
+                'required' => false,
+                'data' => 1,
+                'attr' => ['class' => 'form-control time-input', 'min' => 0, 'max' => 5]
+            ])
+            ->add('timeLimitSeconds', IntegerType::class, [
+                'label' => false,
+                'mapped' => false,
+                'required' => false,
+                'data' => 0,
+                'attr' => ['class' => 'form-control time-input', 'min' => 0, 'max' => 59]
+            ])
+            ->add('timeLimitMode', ChoiceType::class, [
+                'label' => 'Que se passe-t-il après le temps écoulé ?',
+                'choices' => [
+                    'Strict : 0 points et impossible de répondre' => 'strict',
+                    'Pénalité : peut répondre mais perd des points' => 'penalty',
                 ],
                 'expanded' => true,
                 'attr' => ['class' => 'form-check']

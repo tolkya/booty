@@ -1,7 +1,34 @@
 # 📊 BOOTY QR - Suivi de Progression
 
-**Dernière mise à jour**: 29 Décembre 2025  
-**Statut Global**: 🟡 Phase 1 - Configuration initiale
+**Dernière mise à jour**: 3 Janvier 2026  
+**Statut Global**: 🟢 Phase 4 - Interface Web Organisateur (En cours)
+
+---
+
+## ✅ RÉSUMÉ DES AVANCÉES DU 3 JANVIER 2026
+
+### Interface Web - Organisateur
+- [x] Dashboard créé avec statistiques
+- [x] Header avec user + déconnexion
+- [x] Sidebar avec menu (Offcanvas Bootstrap)
+- [x] Sous-header dynamique avec titre de page
+- [x] Page "Mes Chasses" avec liste
+- [x] Formulaire création Hunt avec:
+  - Mode de jeu (QR only / QR + Questions)
+  - Temps limite par défaut pour questions (MM:SS)
+  - Mode strict/pénalité
+  - Nombre de QR codes
+- [x] Génération automatique QR codes à la création
+- [x] Redirection conditionnelle (questions ou détail)
+- [x] Bundle QR Code installé (endroid/qr-code)
+- [x] Page Questions créée (ajout dynamique JS)
+
+### Corrections & Optimisations
+- [x] Constructeur Hunt (createdAt, updatedAt, status auto)
+- [x] Constructeur QrCode (createdAt, isPlaced auto)
+- [x] CSS formulaires espacés proprement
+- [x] Radio buttons dans cards cliquables
+- [x] Duration picker minutes:secondes
 
 ---
 

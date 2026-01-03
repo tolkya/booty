@@ -36,8 +36,10 @@
                                 </small>
                             </div>
                             <div class="mb-3">
-                                {% if hunt.status == 'draft' %}
-                                    <span class="badge bg-warning">Brouillon</span>
+                                {% if hunt.status == 'en_preparation' %}
+                                    <span class="badge bg-warning">En préparation</span>
+                                {% elseif hunt.status == 'draft' %}
+                                    <span class="badge bg-secondary">Brouillon</span>
                                 {% elseif hunt.status == 'ready' %}
                                     <span class="badge bg-info">Prête</span>
                                 {% elseif hunt.status == 'active' %}

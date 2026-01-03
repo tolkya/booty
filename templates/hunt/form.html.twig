@@ -4,6 +4,11 @@
 
 {% block page_name %}{{ is_edit ? 'Modifier la chasse' : 'Nouvelle chasse' }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/hunt-form.css') }}">
+{% endblock %}
+
 {% block body %}
 <div class="container mt-4">
     <div class="row justify-content-center">
@@ -23,21 +28,65 @@
                             {{ form_errors(form.description) }}
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             {{ form_label(form.mode) }}
-                            <div>
-                                {{ form_widget(form.mode) }}
+                            <div class="radio-group">
+                                {% for choice in form.mode %}
+                                    <div class="form-check">
+                                        {{ form_widget(choice) }}
+                                        {{ form_label(choice) }}
+                                    </div>
+                                {% endfor %}
                             </div>
                             {{ form_errors(form.mode) }}
                         </div>
 
-                        <div class="mb-3" id="timeLimitModeField" style="display: none;">
-                            {{ form_label(form.timeLimitMode) }}
-                            <div>
-                                {{ form_widget(form.timeLimitMode) }}
+                        <div class="mb-4" id="questionSettingsBlock" style="display: none;">
+                            <h5>Paramètres des questions</h5>
+                            
+                            <div class="mb-4">
+                                {{ form_label(form.hasTimeLimit) }}
+                                <div class="radio-group">
+                                    {% for choice in form.hasTimeLimit %}
+                                        <div class="form-check">
+                                            {{ form_widget(choice) }}
+                                            {{ form_label(choice) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {{ form_errors(form.hasTimeLimit) }}
                             </div>
-                            {{ form_errors(form.timeLimitMode) }}
-                            <small class="text-muted">Comment gérer le temps limite des questions</small>
+
+                            <div id="timeLimitFields" style="display: none;">
+                                <div class="mb-4">
+                                    <label>Durée pour répondre</label>
+                                    <div class="time-picker-wrapper">
+                                        <div class="time-input-group">
+                                            {{ form_widget(form.timeLimitMinutes) }}
+                                            <span class="time-label">min</span>
+                                        </div>
+                                        <span class="time-separator">:</span>
+                                        <div class="time-input-group">
+                                            {{ form_widget(form.timeLimitSeconds) }}
+                                            <span class="time-label">sec</span>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">Entre 0 et 5 minutes maximum</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.timeLimitMode) }}
+                                    <div class="radio-group">
+                                        {% for choice in form.timeLimitMode %}
+                                            <div class="form-check">
+                                                {{ form_widget(choice) }}
+                                                {{ form_label(choice) }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {{ form_errors(form.timeLimitMode) }}
+                                </div>
+                            </div>
                         </div>
 
                         {% if not is_edit %}
