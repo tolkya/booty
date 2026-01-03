@@ -47,6 +47,9 @@ class Question
     #[ORM\OneToMany(targetEntity: QuestionChoice::class, mappedBy: 'question', orphanRemoval: true)]
     private Collection $questionChoices;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    private ?string $penalty = null;
+
     public function __construct()
     {
         $this->questionChoices = new ArrayCollection();
@@ -179,6 +182,18 @@ class Question
                 $questionChoice->setQuestion(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPenalty(): ?string
+    {
+        return $this->penalty;
+    }
+
+    public function setPenalty(?string $penalty): static
+    {
+        $this->penalty = $penalty;
 
         return $this;
     }
