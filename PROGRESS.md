@@ -1,34 +1,220 @@
 # 📊 BOOTY QR - Suivi de Progression
 
-**Dernière mise à jour**: 3 Janvier 2026  
-**Statut Global**: 🟢 Phase 4 - Interface Web Organisateur (En cours)
+**Dernière mise à jour**: 3 Janvier 2026 - 23h30  
+**Statut Global**: 🟢 Phase 7 - Interface Web Organisateur (En cours avancé)
 
 ---
 
-## ✅ RÉSUMÉ DES AVANCÉES DU 3 JANVIER 2026
+## 📅 RÉSUMÉ SESSION DU 3 JANVIER 2026
 
-### Interface Web - Organisateur
-- [x] Dashboard créé avec statistiques
-- [x] Header avec user + déconnexion
-- [x] Sidebar avec menu (Offcanvas Bootstrap)
-- [x] Sous-header dynamique avec titre de page
-- [x] Page "Mes Chasses" avec liste
-- [x] Formulaire création Hunt avec:
-  - Mode de jeu (QR only / QR + Questions)
-  - Temps limite par défaut pour questions (MM:SS)
-  - Mode strict/pénalité
-  - Nombre de QR codes
-- [x] Génération automatique QR codes à la création
-- [x] Redirection conditionnelle (questions ou détail)
-- [x] Bundle QR Code installé (endroid/qr-code)
-- [x] Page Questions créée (ajout dynamique JS)
+### 🎯 Objectif
+Développer l'interface web complète pour l'organisateur (dashboard, création hunts, gestion questions)
 
-### Corrections & Optimisations
-- [x] Constructeur Hunt (createdAt, updatedAt, status auto)
-- [x] Constructeur QrCode (createdAt, isPlaced auto)
-- [x] CSS formulaires espacés proprement
-- [x] Radio buttons dans cards cliquables
-- [x] Duration picker minutes:secondes
+### ✅ Réalisations Majeures
+
+#### Interface Structure & Navigation
+- [x] **Dashboard** principal avec statistiques (nombre hunts, sessions, participants)
+- [x] **Header** avec informations utilisateur + bouton déconnexion
+- [x] **Sidebar** navigation avec menu Offcanvas Bootstrap (Dashboard, Mes Chasses, Nouvelle Chasse)
+- [x] **Sous-header** dynamique affichant le titre de chaque page
+- [x] **CSS** structure commune (header, sidebar, common) organisés proprement
+
+#### Page "Mes Chasses"
+- [x] Liste de toutes les chasses de l'organisateur
+- [x] Tri par date de création (DESC)
+- [x] Affichage : titre, description, mode, statut, date
+- [x] Boutons d'action : Modifier, Voir détails
+- [x] Bouton "Créer nouvelle chasse"
+
+#### Formulaire Création Hunt (Complexe - Adaptatif)
+- [x] **HuntType** (Form Symfony) avec tous les champs nécessaires
+- [x] Champs principaux : titre, description, mode
+- [x] **Mode de jeu** (radio buttons) :
+  - QR codes uniquement
+  - QR codes + Questions
+- [x] **Paramètres questions** (affichage conditionnel si mode questions) :
+  - Temps limite activé : Oui/Non (radio buttons)
+  - Durée par défaut : 2 inputs (minutes 0-5, secondes 0-59)
+  - Mode temps dépassé : Strict (blocage) / Pénalité (points en moins)
+- [x] **Nombre de QR codes** à générer
+- [x] **CSS personnalisé** : radio buttons dans cards cliquables avec hover effects
+- [x] **JavaScript dynamique** : affichage/masquage selon sélections
+
+#### Génération Automatique QR Codes
+- [x] Création automatique des entrées QR codes en BDD après validation formulaire
+- [x] Code unique généré (`qr_` + uniqid())
+- [x] Premier QR marqué comme `isStartCode = true`
+- [x] Tous marqués `isPlaced = false` par défaut
+- [x] `createdAt` auto-initialisé (constructeur)
+
+#### Redirection Conditionnelle
+- [x] **Si mode "QR only"** → Redirection vers `hunt_show` (page détail hunt)
+- [x] **Si mode "QR + Questions"** → Redirection vers `hunt_questions` (formulaire questions)
+- [x] Flash message succès après création
+
+#### Page Questions (Formulaire Dynamique JS)
+- [x] **Structure** : container questions + bouton "Ajouter une question"
+- [x] **Alerte** : affiche minimum requis (1 question par QR code)
+- [x] **Ajout dynamique** questions avec JavaScript pur
+- [x] **Suppression** questions (bouton corbeille)
+- [x] **Bloc question** contient :
+  - Type question : QCM / Vrai-Faux / Texte libre (boutons Bootstrap toggle)
+  - Texte de la question (textarea)
+  - Points attribués (input number)
+  - Pénalité si temps dépassé (input number)
+  - Image optionnelle (input file)
+  - Choix de réponses (si QCM/Vrai-Faux)
+  - Réponse attendue (si Texte libre)
+
+#### Gestion Choix Réponses (QCM / Vrai-Faux)
+- [x] **QCM** :
+  - 2 réponses par défaut
+  - Bouton "+ Ajouter une réponse" (max 8)
+  - Chaque réponse : input texte + bouton vert/rouge (correct/incorrect)
+  - Plusieurs réponses correctes possibles
+  - Bouton vert (✓) / rouge (✗) toggle au clic
+- [x] **Vrai/Faux** :
+  - Exactement 2 réponses pré-remplies ("Vrai" / "Faux")
+  - Bouton "+ Ajouter" masqué automatiquement
+  - Comportement radio : clic sur n'importe quel bouton inverse les deux
+  - Une seule réponse correcte à la fois
+- [x] **Texte libre** :
+  - Masque les choix de réponses
+  - Affiche champ "Réponse attendue" (optionnel pour validation manuelle)
+
+#### Switch Type Question (Adaptatif)
+- [x] **QCM → Vrai/Faux** :
+  - Masque réponses 3+ (display:none + visibility:hidden + height:0)
+  - Pré-remplit "Vrai" et "Faux"
+  - Configure boutons (Vrai vert, Faux rouge)
+  - Réinitialise event listeners comportement radio
+- [x] **QCM → Texte libre** :
+  - Masque tous les choix
+  - Affiche champ réponse attendue
+- [x] **Vrai/Faux → QCM** :
+  - Réaffiche tous les choix masqués
+  - Vide les valeurs ("Vrai"/"Faux" enlevés)
+  - Réactive bouton "+ Ajouter réponse"
+
+#### JavaScript Optimisé
+- [x] **Switch/case** au lieu de if/else imbriqués (code plus propre)
+- [x] **Data-attributes** pour passer variables PHP vers JS (MIN_QUESTIONS, DEFAULT_TIME_LIMIT, TIME_LIMIT_MODE)
+- [x] **Event listeners** proprement gérés (clonage pour éviter doublons)
+- [x] Validation activée quand nombre minimum questions atteint
+
+#### Bundles Installés
+- [x] **endroid/qr-code-bundle** (génération QR codes - via importmap)
+- [x] **flatpickr** (abandonné - remplacé par inputs natifs)
+
+### 🐛 Corrections & Optimisations
+
+#### Problèmes Résolus
+1. **Cache PHP opcache** :
+   - Constructeurs entités non pris en compte
+   - Solution : `docker compose restart php` + ajout setCreatedAt explicite
+   
+2. **Radio buttons non espacés** :
+   - `form_widget` générait tout d'un bloc
+   - Solution : boucle Twig `{% for choice in form.field %}` pour contrôle individuel
+   - CSS : `.radio-group` avec cards cliquables, gap 20px, hover effects
+
+3. **Duration picker inapproprié** :
+   - Flatpickr affiche heures:minutes (pas minutes:secondes)
+   - Solution : 2 inputs type="number" (minutes 0-5, secondes 0-59) avec style propre
+
+4. **Boutons vert/rouge toggle cassés** :
+   - Event listeners dupliqués après ajout réponses
+   - Solution : clonage bouton pour supprimer anciens listeners avant réattachement
+
+5. **QCM → Vrai/Faux avec 5 réponses** :
+   - Réponses 3-5 toujours visibles
+   - Solution : display:none + visibility:hidden + height:0 + overflow:hidden
+
+6. **Vrai/Faux clic sur vert ne change rien** :
+   - Comportement initial : toggle individuel
+   - Solution : inversion automatique des deux boutons à chaque clic (comportement switch)
+
+7. **maxDuration confusion** :
+   - Erreur : temps limite questions stocké dans Hunt.maxDuration
+   - Correction : maxDuration = durée TOTALE session, temps questions stocké en session puis dans Question.timeLimit
+
+8. **JS dans Twig** :
+   - Variables PHP non échappées correctement
+   - Solution : data-attributes sur balise script
+
+#### Améliorations Code
+- [x] Constructeur `Hunt` : auto-initialise createdAt, updatedAt, status='draft'
+- [x] Constructeur `QrCode` : auto-initialise createdAt, isPlaced=false
+- [x] Switch/case au lieu de if/else pour lisibilité
+- [x] CSS organisé par sections avec commentaires clairs
+- [x] Nommage cohérent (hunt-form.css, hunt-form.js, questions-form.css, questions-form.js)
+
+### 📁 Fichiers Créés/Modifiés
+
+#### Contrôleurs
+- [x] `src/Controller/HuntController.php` :
+  - `index()` : liste hunts utilisateur
+  - `new()` : création hunt + QR codes
+  - `edit()` : modification hunt
+  - `questions()` : page gestion questions
+
+#### Formulaires
+- [x] `src/Form/HuntType.php` : formulaire complet création hunt
+
+#### Templates Twig
+- [x] `templates/base.html.twig` : layout de base avec header/sidebar
+- [x] `templates/dashboard/index.html.twig` : dashboard stats
+- [x] `templates/hunt/index.html.twig` : liste hunts
+- [x] `templates/hunt/form.html.twig` : formulaire création/édition hunt
+- [x] `templates/hunt/questions.html.twig` : page gestion questions
+- [x] `templates/partials/header.html.twig` : header utilisateur
+- [x] `templates/partials/sidebar.html.twig` : menu navigation
+
+#### CSS
+- [x] `public/css/common.css` : styles globaux
+- [x] `public/css/header.css` : styles header
+- [x] `public/css/sidebar.css` : styles sidebar
+- [x] `public/css/hunt-form.css` : styles formulaire hunt
+- [x] `public/css/questions-form.css` : styles formulaire questions
+
+#### JavaScript
+- [x] `public/js/hunt-form.js` : logique affichage conditionnel hunt
+- [x] `public/js/questions-form.js` : logique ajout/gestion questions dynamique
+
+### 🎓 Apprentissages & Bonnes Pratiques
+
+#### Architecture
+- Séparation claire : Controller → Form → Template → CSS → JS
+- Partials Twig pour réutilisabilité (header, sidebar)
+- Data-attributes pour communication PHP ↔ JS
+
+#### CSS
+- Mobile-first avec Bootstrap 5
+- Cards cliquables pour radio buttons (meilleure UX)
+- Variables CSS pour cohérence couleurs
+- Hover effects et transitions
+
+#### JavaScript
+- Pas de framework externe (Vanilla JS)
+- Switch/case pour clarté
+- Event delegation pour éléments dynamiques
+- Clonage éléments pour reset listeners
+
+#### Symfony
+- FormType avec champs unmapped pour logique complexe
+- Session pour passer données entre pages
+- Flash messages pour feedback utilisateur
+- Route naming cohérente
+
+### ⚠️ Points d'Attention Futurs
+
+1. **Validation côté serveur** : actuellement tout en JS, ajouter contraintes Symfony
+2. **Sauvegarde questions** : route POST pour persister les questions en BDD
+3. **Édition questions existantes** : charger et afficher questions si hunt déjà créée
+4. **Upload images questions** : gérer stockage fichiers (VichUploaderBundle ?)
+5. **Page hunt_show** : détail hunt avec liste QR codes et questions
+6. **Impression QR codes** : génération PNG/SVG avec endroid/qr-code
+7. **Attribution questions** : service randomisation lors scan QR
 
 ---
 
@@ -60,13 +246,15 @@
 
 ---
 
+---
+
 ## 📦 PHASE 2: INSTALLATION BUNDLES
 
-###x] symfony/maker-bundle
-- [ ] symfony/debug-bundle  
-- [ ] symfony/web-profiler-bundle
-- [x] doctrine/doctrine-fixtures-bundle
-- [ ] zenstruck/foundry
+### Bundles Essentiels & Dev
+- [x] symfony/maker-bundle (dev)
+- [x] symfony/debug-bundle (dev)
+- [x] doctrine/doctrine-fixtures-bundle (dev)
+- [ ] zenstruck/foundry (dev)
 
 ### Bundles Sécurité & API
 - [x] symfony/security-bundle
@@ -75,18 +263,17 @@
 - [ ] nelmio/cors-bundle
 
 ### Bundles Interface & Outils
-- [ ] symfony/twig-bundle
-- [ ] symfony/form
+- [x] symfony/twig-bundle
+- [x] symfony/form
 - [ ] symfony/webpack-encore-bundle
-- [ ] endroid/qr-code-bundle
+- [x] endroid/qr-code-bundle ✅ **Installé 3 jan 2026**
 - [ ] vich/uploader-bundle
 
-### Bundles Validation
+### Bundles Validation & Serialization
 - [x] symfony/validator
 - [ ] symfony/serializer
 
-**Statut**: 🟢 En cours (bundles essentiels installés)
-**Statut**: ⏸️ Pas commencé
+**Statut**: 🟢 50% complété (bundles essentiels + interface web installés)
 
 ---
 
@@ -164,17 +351,52 @@
 
 ## 🎨 PHASE 7: INTERFACE WEB ORGANISATEUR
 
-- [ ] Webpack Encore configuré
-- [ ] Dashboard principal
-- [ ] Page liste chasses
-- [ ] Page création/édition chasse
+### Structure & Navigation
+- [x] Layout de base (base.html.twig) avec Bootstrap 5
+- [x] Header avec user info + déconnexion
+- [x] Sidebar menu Offcanvas avec navigation
+- [x] Sous-header dynamique par page
+- [x] CSS organisé (common, header, sidebar)
+
+### Pages Principales
+- [x] Dashboard (statistiques : hunts, sessions, participants)
+- [x] Liste des chasses (hunt/index) triée par date DESC
+- [x] Formulaire création/édition hunt (hunt/form) avec :
+  - Champs principaux (titre, description, mode)
+  - Paramètres questions conditionnels
+  - Radio buttons dans cards cliquables
+  - Duration picker (MM:SS) natif
+  - Validation côté client JavaScript
+- [x] Page gestion questions (hunt/questions) avec :
+  - Ajout dynamique questions (JS)
+  - Types adaptatifs (QCM / Vrai-Faux / Texte libre)
+  - Gestion choix réponses avec toggle vert/rouge
+  - Validation nombre minimum questions
+- [ ] Page détail hunt (hunt/show) avec :
+  - Infos générales hunt
+  - Liste QR codes générés
+  - Liste questions créées
+  - Bouton "Imprimer QR codes"
+  - Bouton "Activer hunt"
 - [ ] Page configuration QR codes
-- [ ] Page gestion questions
-- [ ] Page génération/impression QR codes
-- [ ] Page statistiques
+- [ ] Page génération/impression QR codes (PNG/SVG)
+- [ ] Page statistiques hunt
 - [ ] Page détail session participant
 
-**Statut**: ⏸️ Pas commencé
+### Fonctionnalités Implémentées
+- [x] Génération automatique QR codes à création hunt
+- [x] Redirection conditionnelle (QR only → détail, Questions → formulaire questions)
+- [x] Affichage conditionnel paramètres (JS hunt-form.js)
+- [x] Ajout/suppression questions dynamique (JS questions-form.js)
+- [x] Switch type question avec adaptation interface
+- [x] Toggle réponses correctes/incorrectes
+- [x] Comportement radio pour Vrai/Faux
+- [x] Limite 8 réponses max par question QCM
+- [ ] Sauvegarde questions en BDD (route POST à créer)
+- [ ] Édition questions existantes
+- [ ] Upload images questions
+
+**Statut**: 🟢 60% complété (structure + formulaires création fonctionnels, manque sauvegarde questions et pages détail)
 
 ---
 
@@ -353,68 +575,66 @@ TOTAL    : ██░░░░░░░░  15 IMMÉDIATES
 ## 📊 PROGRESSION GLOBALE
 
 ```
-Phase 1  : ████████░░ 80%  (Configuration initiale)
-Phase 2  : ░░░░░░░░░░  0%  (Bundles)
-Phase 3  : ░░░░░░░░░░  0%  (Entités)
-Phase 4  : ░░░░░░░░░░  0%  (Migrations)
-Phase 5  : ░░░░░░░░░░  0%  (Sécurité)
-Phase 6  : ░░░░░░░░░░  0%  (API)
-Phase 7  : ░░░░░░░░░░  0%  (Interface Web)
-Phase 8  : ░░░░░░░░░░  0%  (Logique Métier)
-Phase 9  : ░░░░░░░░░░  0%  (Fixtures)
-Phase 10 : ░░░░░░░░░░  0%  (Tests)
-Phase 11 : ░░░░░░░░░░  0%  (Flutter)
-Phase 12 : ░░░░░░░░░░  0%  (Déploiement)
+## 📊 PROGRESSION GLOBALE
 
-TOTAL    : █░░░░░░░░░  7%
+```
+Phase 1  : ██████████ 100% (Configuration initiale - TERMINÉE)
+Phase 2  : █████░░░░░  50% (Bundles essentiels + web installés)
+Phase 3  : ██████████ 100% (10 entités créées - TERMINÉE)
+Phase 4  : ██████████ 100% (Migration exécutée - TERMINÉE)
+Phase 5  : ███░░░░░░░  30% (Authentification basique, manque JWT)
+Phase 6  : ░░░░░░░░░░   0% (API REST - pas commencé)
+Phase 7  : ██████░░░░  60% (Interface web - création hunts OK, manque détail/sauvegarde questions)
+Phase 8  : ░░░░░░░░░░   0% (Services métier - pas commencé)
+Phase 9  : ░░░░░░░░░░   0% (Fixtures - pas commencé)
+Phase 10 : ░░░░░░░░░░   0% (Tests - pas commencé)
+Phase 11 : ░░░░░░░░░░   0% (Flutter - pas commencé)
+Phase 12 : ░░░░░░░░░░   0% (Déploiement - pas commencé)
+
+TOTAL    : ████░░░░░░  42%
 ```
 
 ---
 
-*Ce fichier sera mis à jour après chaque étape complétée*
-*N'hésitez pas à ajouter vos propres notes dans la section "Notes de Session"*
+## 🎯 PROCHAINES ÉTAPES PRIORITAIRES
 
-### Session du 31 Décembre 2025 / 1er Janvier 2026
-**Objectif**: Création complète de toutes les entités du modèle
+### Immédiat (Session suivante)
+1. **Route POST sauvegarde questions** (hunt/questions/save)
+   - Récupérer données JSON depuis JavaScript
+   - Parser et créer entités Question + QuestionChoice
+   - Associer à la Hunt
+   - Gérer upload images
 
-**Actions réalisées**:
-- ✅ Création des 10 entités : User, Hunt, QrCode, Question, QuestionChoice, Hunter, Session, SessionHunter, SessionAnswer, SessionLocation
-- ✅ Choix decimal (10,8 et 11,8) pour GPS (précision centimètre)
-- ✅ Renommage SessionParticipant → SessionHunter
-- ✅ Ajout Hunt.mode (qr_only/qr_with_questions)
-- ✅ Ajout Hunt.timeLimitMode (strict/penalty)
-- ✅ Hunter simplifié à "name" uniquement
+2. **Page détail Hunt** (hunt_show)
+   - Afficher infos hunt
+   - Liste QR codes générés (placés/non placés)
+   - Liste questions créées avec choix
+   - Boutons actions (imprimer QR, activer, modifier)
 
-**Clarifications métier**:
-- Anonymat hunters: nouveau Hunter à chaque session
-- Mode qr_only possible (sans questions)
-- timeLimitMode: strict (bloqué) ou penalty (pénalité)
-- Questions ≥ QR codes pour variété
-- Session.maxDuration individuel par hunter
-- Session.startedAt/endedAt géré par organisateur
-- SessionHunter.startedAt quand s'inscrit + endedAt calculé
+3. **Génération images QR codes**
+   - Service avec endroid/qr-code
+   - Page impression avec tous les QR codes
+   - Format PNG/SVG téléchargeable
+   - QR code = URL scan (ex: https://app.com/scan/{code})
 
-**Prochaine action**: Générer et exécuter migration
+### Court terme
+4. **Édition hunt existante**
+   - Charger questions existantes dans formulaire JS
+   - Permettre modification/suppression questions
+   - Gérer changement nombre QR codes (ajout/suppression)
 
-**Progression**: Phase 3 terminée (100%), Total: 28%
+5. **Upload et affichage images questions**
+   - VichUploaderBundle ou stockage manuel
+   - Affichage miniature dans liste questions
+   - Compression images pour performance
 
-- ✅ Migration générée et exécutée (10 tables créées)
-- ✅ Structure vérifiée dans Adminer
+6. **Page sessions**
+   - Liste sessions d'une hunt
+   - Créer nouvelle session
+   - Lancer/terminer session
+   - Voir participants
 
-**Prochaine session** : Interface web organisateur
-1. Connexion/authentification (login/logout)
-2. Dashboard avec liste des hunts
-3. CRUD Hunt (créer, modifier, supprimer)
-4. Gestion QR codes d'une hunt
-5. Gestion questions d'une hunt
-6. Liste et lancement des sessions
-
-**Progression**: Phase 4 terminée (100%), Total: 35%
-
-### Session du 1er Janvier 2026
-**Objectif**: Mise en place authentification et planification interface web
-
-**Actions réalisées**:
+---
 - ✅ Installation Twig (symfony/twig-bundle)
 - ✅ Installation Web Profiler (symfony/profiler-pack) pour debug
 - ✅ Configuration système de sécurité (security.yaml)
