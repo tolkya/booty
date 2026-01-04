@@ -11,14 +11,64 @@
 
 {% block body %}
 <div class="container mt-4">
+    {{ form_start(form, {'attr': {'id': 'questions-form', 'novalidate': 'novalidate'}}) }}
+    
+    {# Afficher les erreurs globales du formulaire #}
+    {{ form_errors(form) }}
+    
     <div class="alert alert-info">
         <strong>📝 Nombre de questions requises :</strong> Minimum {{ qrCodeCount }} questions (1 par QR code)
         <br>
-        <strong>✅ Questions créées :</strong> {{ questionCount }} / {{ qrCodeCount }}
+        <strong>✅ Questions créées :</strong> <span id="question-counter">{{ form.questions|length }}</span> / {{ qrCodeCount }}
     </div>
 
-    <div id="questions-container">
-        <!-- Les questions seront ajoutées ici dynamiquement -->
+    {# Template HTML pour cloner les questions (caché) #}
+    <template id="question-template">
+        <div class="question-block card mb-4" data-question-index="__INDEX__">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Question #<span class="question-number">__NUMBER__</span></h5>
+                <button type="button" class="btn btn-sm btn-danger delete-question">
+                    🗑️ Supprimer
+                </button>
+            </div>
+            <div class="card-body">
+                {# Type de question (radio buttons Bootstrap) #}
+                <div class="mb-3">
+                    <label class="form-label">Type de question</label>
+                    <div class="btn-group w-100 type-buttons-container" role="group">
+                        {# Les inputs seront insérés ici par le JS #}
+                    </div>
+                </div>
+                
+                <div class="form-fields-container">
+                    {# Les autres champs seront insérés ici #}
+                </div>
+                
+                {# Choix de réponses (QCM/Vrai-Faux) #}
+                <div class="choices-container" data-prototype="">
+                    <!-- Les choix seront ajoutés ici -->
+                </div>
+                
+                <button type="button" class="btn btn-sm btn-secondary add-choice">
+                    + Ajouter une réponse
+                </button>
+                
+                {# Réponse attendue (texte libre) #}
+                <div class="text-answer-container" style="display: none;">
+                    <!-- Le champ expectedAnswer sera déplacé ici -->
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {# Container pour les questions #}
+    <div id="questions-container" 
+         data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}"
+         data-index="{{ form.questions|length }}">
+        
+        {% for questionForm in form.questions %}
+            {% include 'hunt/_question_block.html.twig' with {'questionForm': questionForm, 'index': loop.index0} %}
+        {% endfor %}
     </div>
 
     <div class="text-center my-4">
@@ -28,19 +78,22 @@
     </div>
 
     <div class="text-center my-4">
-        <button type="button" id="validate-questions-btn" class="btn btn-success btn-lg" disabled>
+        <button type="submit" class="btn btn-success btn-lg" id="validate-questions-btn">
             Valider toutes les questions
         </button>
         <a href="{{ path('hunt_index') }}" class="btn btn-secondary">Terminer plus tard</a>
     </div>
+
+    {{ form_end(form) }}
 </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/questions-form.js') }}" 
-            data-min-questions="{{ qrCodeCount }}"
-            data-default-time="{{ defaultTimeLimit|default('null') }}"
-            data-time-mode="{{ timeLimitMode|default('') }}">
+    <script>
+        window.MIN_QUESTIONS = {{ qrCodeCount }};
+        window.DEFAULT_TIME_LIMIT = {{ defaultTimeLimit ?? 'null' }};
+        window.TIME_LIMIT_MODE = {{ timeLimitMode ? ("'" ~ timeLimitMode ~ "'")|raw : 'null' }};
     </script>
+    <script src="{{ asset('js/questions-form-symfony.js') }}"></script>
 {% endblock %}

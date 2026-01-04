@@ -48,3 +48,48 @@
     background-color: #3b82f6;
     color: white;
 }
+
+/* Erreurs de formulaire Symfony (ul sans classe) */
+form ul:not(.choices-collection) {
+    background-color: #fee2e2;
+    border: 2px solid #ef4444;
+    color: #991b1b;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin: 8px 0;
+    list-style: none;
+}
+
+form ul:not(.choices-collection) li {
+    margin: 5px 0;
+    font-weight: 500;
+}
+
+form ul:not(.choices-collection) li::before {
+    content: "⚠️ ";
+    margin-right: 5px;
+}
+
+/* Champs en erreur */
+textarea[aria-invalid="true"],
+input[aria-invalid="true"],
+select[aria-invalid="true"] {
+    border-color: #ef4444 !important;
+    border-width: 2px !important;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Cacher le rendu par défaut de Symfony pour les types (on utilise notre version Bootstrap) */
+.question-type-radios {
+    display: none !important;
+}
+
+.question-type-radios + label {
+    display: none !important;
+}

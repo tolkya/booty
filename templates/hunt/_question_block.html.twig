@@ -1,0 +1,75 @@
+{# templates/hunt/_question_block.html.twig #}
+<div class="question-block card mb-4" data-question-index="{{ index }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Question #<span class="question-number">{{ index + 1 }}</span></h5>
+        <button type="button" class="btn btn-sm btn-danger delete-question">
+            🗑️ Supprimer
+        </button>
+    </div>
+    <div class="card-body">
+        {# Type de question (radio buttons Bootstrap) #}
+        <div class="mb-3">
+            {{ form_label(questionForm.type) }}
+            <div class="btn-group w-100" role="group">
+                {% for choice in questionForm.type %}
+                    {{ form_widget(choice, {'attr': {'class': 'btn-check'}}) }}
+                    <label class="btn btn-outline-primary" for="{{ choice.vars.id }}">
+                        {{ choice.vars.label }}
+                    </label>
+                {% endfor %}
+            </div>
+            {{ form_errors(questionForm.type) }}
+        </div>
+        
+        {# Texte de la question #}
+        <div class="mb-3">
+            {{ form_row(questionForm.questionText) }}
+        </div>
+        
+        {# Points et Pénalité #}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_row(questionForm.points) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(questionForm.penalty) }}
+            </div>
+        </div>
+        
+        {# Image optionnelle #}
+        <div class="mb-3">
+            {{ form_row(questionForm.image) }}
+        </div>
+        
+        {# Choix de réponses (QCM/Vrai-Faux) #}
+        <div class="choices-container" 
+             data-prototype="{{ form_widget(questionForm.choices.vars.prototype)|e('html_attr') }}">
+            
+            {% for choiceForm in questionForm.choices %}
+                <div class="choice-item d-flex align-items-center mb-2">
+                    {{ form_widget(choiceForm.choiceText) }}
+                    {{ form_widget(choiceForm.isCorrect) }}
+                    
+                    {# Bouton toggle vert/rouge #}
+                    <button type="button" 
+                            class="btn choice-toggle {{ choiceForm.isCorrect.vars.value == 'true' ? 'correct' : 'incorrect' }}" 
+                            data-correct="{{ choiceForm.isCorrect.vars.value }}">
+                        {{ choiceForm.isCorrect.vars.value == 'true' ? '✓' : '✗' }}
+                    </button>
+                    
+                    {# Bouton supprimer choix #}
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-2 delete-choice">×</button>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <button type="button" class="btn btn-sm btn-secondary add-choice">
+            + Ajouter une réponse
+        </button>
+        
+        {# Réponse attendue (texte libre) #}
+        <div class="text-answer-container" style="display: none;">
+            {{ form_row(questionForm.expectedAnswer) }}
+        </div>
+    </div>
+</div>
