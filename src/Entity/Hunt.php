@@ -62,6 +62,12 @@ class Hunt
     #[ORM\Column(length: 20)]
     private ?string $timeLimitMode = null;
 
+    #[ORM\Column]
+    private ?bool $timeLimitEnabled = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $defaultTimeLimit = null;
+
     public function __construct()
     {
         $this->qrCodes = new ArrayCollection();
@@ -271,6 +277,30 @@ class Hunt
     public function setTimeLimitMode(string $timeLimitMode): static
     {
         $this->timeLimitMode = $timeLimitMode;
+
+        return $this;
+    }
+
+    public function isTimeLimitEnabled(): ?bool
+    {
+        return $this->timeLimitEnabled;
+    }
+
+    public function setTimeLimitEnabled(bool $timeLimitEnabled): static
+    {
+        $this->timeLimitEnabled = $timeLimitEnabled;
+
+        return $this;
+    }
+
+    public function getDefaultTimeLimit(): ?int
+    {
+        return $this->defaultTimeLimit;
+    }
+
+    public function setDefaultTimeLimit(?int $defaultTimeLimit): static
+    {
+        $this->defaultTimeLimit = $defaultTimeLimit;
 
         return $this;
     }
